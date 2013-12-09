@@ -1,7 +1,8 @@
 var NotesApp = (function () {
 	var App = {
 		stores: {},
-		views: {}
+		views: {},
+		collections: {}
 	};
 
 
@@ -83,15 +84,58 @@ var NotesApp = (function () {
 
 	});
 
+	// Each item is represented by NotListView
+	var NoteListView = Backbone.View.extend({
+		initialize: function(){
+			_.bindAll(this, 'addOne', 'addAll');
+
+			this.collection.bind('add', this.addOne);
+			this.collection.bind('refresh', this.addAll);
+
+			this.collection.fetch();
+		},
+
+		addOne: function(note){
+			var view = new NoteListItemView({model: note});
+			$(this.el).append(view.render().el);
+		},
+
+		addAll: function(){
+			$(this.el).empty();
+			this.collection.each(this.addOne);
+		}
+	});
+
+	var NoteListItemView = Backbone.View.extend({
+		tagName: 'LI',
+		template: _.template($('#note-list-item-template').html()),
+
+		initialize: function(){
+			_.bindAll(this, 'render')
+
+			this.model.bind('change', this.render)
+		},
+
+		render: function(){
+			$(this.el).html(this.template({ note: this.model}))
+			return this;
+		}
+	});
+
+
 	window.Note = Note;
 
+	App.collections.all_notes = new NoteList();
 
-	$(document).ready(function(){
-		App.views.new_form = new NewFormView({
-			el: $('#new')
-		});
-	})
+
+	App.views.new_form = new NewFormView({
+		el: $('#new')
+	});
 	
+	App.views.list_alphabetical = new NoteListView({
+		el: $('#all_notes'),
+		collection: App.collections.all_notes
+	});
 
 
 	return App;
