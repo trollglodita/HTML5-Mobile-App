@@ -206,7 +206,11 @@ var NotesApp = (function(){
   
   window.Note = Note;
   
-  App.collections.all_notes = new NoteList();
+  App.collections.all_notes = new NoteList(null, {
+    comparator: function (note) {
+      return (note.get('title') || "").toLowerCase();
+    }
+  });
   
   App.views.new_form = new NewFormView({
     el: $('#new')
