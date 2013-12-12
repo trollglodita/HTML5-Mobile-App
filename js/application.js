@@ -76,9 +76,9 @@ var NotesApp = (function(){
 
       if (attrs.locate == 'yes' && 'geolocation' in navigator) {
         // Do geolocate
-        navigator.geolocation.getCurrentPosition(function (position) {
+        navigator.geolocation.getCurrentPosition(function(position) {
           // Handle Our Geolocation Results
-          if(position && position.coors){
+          if(position && position.coords){
             attrs.latitude = position.coords.latitude;
             attrs.longitude = position.coords.longitude
           }
@@ -103,7 +103,7 @@ var NotesApp = (function(){
       return {
         title: this.$('form [name="title"]').val(),
         body: this.$('form [name="body"]').val(),
-        locate: this.$('form [name="locate').val()
+        locate: this.$('form [name="locate"]').val()
       }
     },
     
