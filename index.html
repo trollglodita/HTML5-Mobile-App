@@ -40,6 +40,15 @@
 					<label for="body">Body</label>
 					<textarea id="body" name="body" value=""></textarea>
 				</div>
+
+				<div data-role="fieldcontain">
+					<label for="locate">Tag With Location</label>
+					<select name="locate" id="locate" data-role="slider">
+							<option value="no">No</option>
+							<option value="yes">Yes</option>
+					</select>
+				</div>
+
 				<button data-icon="check" data-theme="b">Save</button>
 			</form>
 		</div>
@@ -73,6 +82,12 @@
 		</div>
 		<div data-role="content">
 			<%= note.get('body') %>
+
+			<% if(note.isGeoTagged()){ %>
+			<h3>Location</h3>
+			[<%= note.get('latitude') %>, <%= note.get('longitude') %>]
+
+			<%  } /* End if */ % >
 		</div>
 	</script>
 

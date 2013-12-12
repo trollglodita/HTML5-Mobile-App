@@ -22,9 +22,14 @@ var NotesApp = (function(){
       if(!this.get('body')){
         this.set({body: "No Content"})
       };
+    },
+
+    // Returns true if the Note is tagged with location data
+    isGeoTagged: function () {
+      return this.get('latitude') && this.get('longitude');
     }
     
-  })
+  });
   
   
   var NoteList = Backbone.Collection.extend({
@@ -43,7 +48,7 @@ var NotesApp = (function(){
       })
     }
     
-  })
+  });
   
   
   // Views
@@ -55,24 +60,50 @@ var NotesApp = (function(){
     createNote: function(e){
       var attrs = this.getAttributes(),
           note = new Note();
+
+
+      function create(){
+        // Save
+        note.set(attrs);
+        note.save();
+
+        //Close
+        $('.ui-dialog').dialog('close');
+        this.reset();
+
+      }
+
+
+      if (attrs.locate == 'yes' && 'geolocation' in navigator) {
+        // Do geolocate
+        navigator.geolocation.getCurrentPosition(function (position) {
+          // Handle Our Geolocation Results
+          if(position && position.coors){
+            attrs.latitude = position.coords.latitude;
+            attrs.longitude = position.coords.longitude
+          }
+          create();
+
+        })
+      } else{
+        create();
+      }
           
-      note.set(attrs);
-      note.save();
+      
       
       // Stop browser from actually submitting the form (or following the link)
       e.preventDefault();
       // Stop jQuery Mobile from doing its form magic. We got this.
       e.stopPropagation();
       
-      //Close
-      $('.ui-dialog').dialog('close');
-      this.reset();
+
     },
     
     getAttributes: function(){
       return {
-        title: this.$('form [name=title]').val(),
-        body: this.$('form [name=body]').val()
+        title: this.$('form [name="title"]').val(),
+        body: this.$('form [name="body"]').val(),
+        locate: this.$('form [name="locate').val()
       }
     },
     
