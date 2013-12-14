@@ -4,6 +4,7 @@
 	<title>Taking Notes</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.0a3.css"/>
+	<link rel="stylesheet" href="css/index.css"  media="screen" charset="utf-8">
 
 </head>
 <body>
@@ -71,8 +72,8 @@
 		<div data-role="header">
 			<a href="#home" data-role="button" data-rel="back" data-icon="arrow-l">Back</a>
 			<h1>Nearest Notes</h1>
+			<a href="#" class="locate" data-role="button" data-icon="refresh" class="ui-btn-right" data-theme="e">Locate</a>
 		</div>
-		<a href="#" class="locate" data-role="button" data-icon="refresh" class="ui-btn-right" data-theme="e"></a>
 
 		<div data-role="content">
 			<ul data-role="listview" id="nearest_notes"></ul>
@@ -85,7 +86,10 @@
 
 
 	<script type="text/template" id="note-list-item-template">
-		<a href="#note_<%= note.id %>" ><%= note.get('title') %> (<%= note.distanceFromCurrent() %>) </a>
+		<a href="#note_<%= note.id %>" >
+			<%= note.get('title') %> 
+			(<%= note.distanceFromCurrent() %>) 
+		</a>
 	</script>
 
 	<script type="text/template" id="note-detail-template">

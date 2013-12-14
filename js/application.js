@@ -1,4 +1,12 @@
 var NotesApp = (function(){
+  var debug = true;
+
+  function fuzzCoords (coords) {
+    coords.latitude += (Math.random() - 0.5) * 0.1;
+    coords.longitude += (Math.random() - 0.5)* 0.1;
+  }
+
+
   var App = {
     stores: {},
     views: {},
@@ -66,6 +74,8 @@ var NotesApp = (function(){
         return -1;
       }
 
+      // code provided by movable-type.co.uk  
+      // Convert Degrees to Radians
       function toRad (n) {
         return n * Math.PI/ 180;
       }
@@ -74,7 +84,7 @@ var NotesApp = (function(){
           lat2 = this.get('latitude'),
           lon1 = App.currentLocation.longitude,
           lon2 = this.get('longitude');
-  
+
       var R = 6371; // km
       var dLat = toRad(lat2-lat1);
       var dLon = toRad(lon2-lon1); 
@@ -118,11 +128,11 @@ var NotesApp = (function(){
       this.listView = options.listView;
     },
 
-    updateLocation: function (e) {
+    updateLocation: function(e) {
       var pageView = this;
 
       if('geolocation' in navigator){
-        navigator.geolocation.getCurrentPosition(function (position) {
+        navigator.geolocation.getCurrentPosition(function(position){
           if(position && position.coords){
 
             // Set Current Location
@@ -166,6 +176,11 @@ var NotesApp = (function(){
             attrs.latitude = position.coords.latitude;
             attrs.longitude = position.coords.longitude
           }
+
+          if(debug){
+            fuzzCoords(attrs);
+          }
+
           create();
 
         })
@@ -328,10 +343,10 @@ var NotesApp = (function(){
   });
 
   App.collections.notes_distance = new NoteList(null, {
-    comparator: function (note) {
+    comparator: function(note) {
       return note.distanceFromCurrent();
     }
-  })
+  });
   
   App.views.new_form = new NewFormView({
     el: $('#new')
@@ -347,7 +362,17 @@ var NotesApp = (function(){
     collection: App.collections.all_notes
   });
   
+  // Initialize View for distance sorte listview of Notes
+  App.views.list_distance = new NoteListView({
+    el: $('#nearest_notes'),
+    collection: App.collections.notes_distance
+  })
   
+  // Initialize the Nearest Page View
+  App.views.nearest_page = new NearestPageView({
+    el: $('#nearest'),
+    listView: App.views.list_distance
+  })
 
   
   
